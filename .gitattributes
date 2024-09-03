@@ -1,0 +1,7 @@
+* text eol=lf
+*.svg binary
+*.png binary
+*.jpg binary
+*.gif binary
+*.md binary
+* text=auto
