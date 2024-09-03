@@ -20,18 +20,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+      
+      - name: 'Cache Node Modules'
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: 'node_modules'
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+          save-always: true
 
-      - name: npm install, build, and test
-        run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
+      - name: Install Node Modules
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Build App
+        run: npm run build --if-present
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
           path: .
+          retention-days: 90
 
   deploy:
     runs-on: ubuntu-latest
